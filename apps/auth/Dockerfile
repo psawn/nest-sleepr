@@ -3,10 +3,14 @@ FROM node:alpine As development
 WORKDIR /usr/src/app
 
 COPY package.json ./
+COPY tsconfig.json tsconfig.json
 
 RUN npm i
 
-COPY . .
+COPY apps/auth apps/auth
+COPY libs libs
+
+# RUN cd apps/auth && npm i
 
 RUN npm run build
 

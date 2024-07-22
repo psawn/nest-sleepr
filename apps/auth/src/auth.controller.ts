@@ -1,10 +1,9 @@
 import { Response } from 'express';
 import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CurrentUser } from '@app/common';
+import { CurrentUser, UsersDocument } from '@app/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard, LocalAuthGuard } from './guards';
-import { UsersDocument } from './users/models/users.schema';
 
 @Controller('auth')
 export class AuthController {
