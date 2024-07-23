@@ -17,6 +17,7 @@ services:
     build: 
       context: .
       dockerfile: ./apps/auth/Dockerfile
+      # dockerfile: ./apps/auth/Dockerfile.dev
       target: development
     command: npm run start:dev auth
     env_file:
@@ -30,6 +31,7 @@ services:
     build: 
       context: .
       dockerfile: ./apps/payments/Dockerfile
+      # dockerfile: ./apps/payments/Dockerfile.dev
       target: development
     command: npm run start:dev payments
     env_file:
@@ -42,6 +44,7 @@ services:
     build: 
       context: .
       dockerfile: ./apps/notifications/Dockerfile
+      # dockerfile: ./apps/notifications/Dockerfile.dev
       target: development
     command: npm run start:dev notifications
     env_file:

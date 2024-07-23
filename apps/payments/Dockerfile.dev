@@ -1,0 +1,57 @@
+# Use a node base image for the development stage
+FROM node:alpine AS development
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json (if available)
+COPY package*.json ./
+
+# Copy TypeScript configuration
+COPY tsconfig.json tsconfig.json
+
+# Install all dependencies
+RUN npm ci
+
+# Copy the application code
+COPY apps/payments apps/payments
+COPY libs libs
+
+# Use a node base image for the build stage
+FROM node:alpine AS build
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Copy tsconfig.json to ensure TypeScript can find its configuration
+COPY tsconfig.json tsconfig.json
+
+# Copy node_modules from the development stage
+COPY --from=development /usr/src/app/node_modules ./node_modules
+
+# Build the application
+RUN npm run build
+
+# Set NODE_ENV environment variable
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+# Install only production dependencies and clean npm cache
+# Updated to use --omit=dev based on npm warning
+RUN npm ci --omit=dev && npm cache clean --force
+
+# Use a node base image for the production stage
+FROM node:alpine AS production
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy node_modules and build artifacts from the build stage
+COPY --from=build /usr/src/app/node_modules ./node_modules
+COPY --from=build /usr/src/app/dist ./dist
+
+# Command to run the application
+CMD ["node", "dist/apps/payments/main"]
