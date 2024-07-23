@@ -7,8 +7,13 @@ COPY tsconfig.json tsconfig.json
 
 RUN npm i
 
+# if want to seperate package.json -> use this line below instate of COPY apps/auth apps/auth
+# COPY apps/notifications /notifications
 COPY apps/notifications apps/notifications
 COPY libs libs
+
+# if want to seperate package.json -> use this line below
+# RUN cd /auth && npm i
 
 RUN npm run build
 
