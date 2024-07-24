@@ -16,3 +16,6 @@ steps:
         'push',
         'asia-east2-docker.pkg.dev/sleepr-430208/reservations/production',
       ]
+
+options:
+  logging: CLOUD_LOGGING_ONLY
