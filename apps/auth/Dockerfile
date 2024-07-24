@@ -15,7 +15,7 @@ COPY libs libs
 # if want to seperate package.json -> use this line below
 # RUN cd /auth && npm i
 
-RUN npm run build
+RUN npm run build auth
 
 FROM node:alpine As production
 

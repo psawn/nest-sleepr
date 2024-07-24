@@ -12,7 +12,7 @@ RUN npm i
 COPY apps/payments apps/payments
 COPY libs libs
 
-RUN npm run build
+RUN npm run build payments
 
 # if want to seperate package.json -> use this line below
 # RUN cd /auth && npm i

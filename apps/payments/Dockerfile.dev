@@ -33,7 +33,7 @@ COPY tsconfig.json tsconfig.json
 COPY --from=development /usr/src/app/node_modules ./node_modules
 
 # Build the application
-RUN npm run build
+RUN npm run build payments
 
 # Set NODE_ENV environment variable
 ARG NODE_ENV=production
