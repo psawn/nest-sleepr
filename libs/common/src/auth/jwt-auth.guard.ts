@@ -5,8 +5,11 @@ import {
   ExecutionContext,
   Inject,
   Injectable,
+  Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Reflector } from '@nestjs/core';
 import { AUTH_SERVICE } from '../constants/services';
 import { UserDto } from '../dto';
 
@@ -14,9 +17,14 @@ import { UserDto } from '../dto';
 // any service which use this JWT guard need client proxy to inject auth service -> this is how we talk to other microservice
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
+  private readonly logger = new Logger(JwtAuthGuard.name);
+
   // @Inject to inject client proxy
   // -> this authClient will allow talk to other microservices via provided transport layer TCP
-  constructor(@Inject(AUTH_SERVICE) private readonly authClient: ClientProxy) {}
+  constructor(
+    @Inject(AUTH_SERVICE) private readonly authClient: ClientProxy,
+    private readonly reflector: Reflector,
+  ) {}
 
   canActivate(
     context: ExecutionContext,
@@ -31,15 +39,29 @@ export class JwtAuthGuard implements CanActivate {
       return false;
     }
 
+    const roles = this.reflector.get<string[]>('roles', context.getHandler());
+
     return this.authClient
       .send<UserDto>('authenticate', { Authentication: jwt })
       .pipe(
         // tap allow to execute side effect of the incoming response from auth service
         tap((res) => {
+          if (roles) {
+            for (const role of roles) {
+              if (!res.roles.includes(role)) {
+                this.logger.error('User does not have valid roles');
+                throw new UnauthorizedException();
+              }
+            }
+          }
+
           context.switchToHttp().getRequest().user = res;
         }),
         map(() => true),
-        catchError(() => of(false)),
+        catchError((err) => {
+          this.logger.error(err);
+          return of(false);
+        }),
       );
   }
 }
