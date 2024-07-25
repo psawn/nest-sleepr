@@ -17,7 +17,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromExtractors([
         // when using client proxy to validate jwt, the jwt is coming from RPC call -> come from request object
         (request: any) => {
-          return request?.cookies?.Authentication || request?.Authentication
+          console.log('request', request);
+          return (
+            request?.cookies?.Authentication ||
+            request?.Authentication ||
+            request?.headers?.Authentication
+          );
         },
       ]),
       secretOrKey: configService.get('JWT_SECRET'),
@@ -25,6 +30,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate({ userId }: TokenPayload) {
+    console.log('userId', userId);
+
     return this.usersService.getUser({ _id: userId });
   }
 }

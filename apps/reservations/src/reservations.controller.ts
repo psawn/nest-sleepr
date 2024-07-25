@@ -16,6 +16,11 @@ import { CreateReservationDto, UpdateReservationDto } from './dto/';
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
 
+  @Get('health-check')
+  healthCheck() {
+    return 'OK';
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
