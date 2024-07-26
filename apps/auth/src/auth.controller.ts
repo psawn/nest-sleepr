@@ -1,12 +1,18 @@
 import { Response } from 'express';
 import { Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CurrentUser, UsersDocument } from '@app/common';
+import { Payload } from '@nestjs/microservices';
+import {
+  AuthServiceController,
+  AuthServiceControllerMethods,
+  CurrentUser,
+  UsersDocument,
+} from '@app/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard, LocalAuthGuard } from './guards';
 
 @Controller('auth')
-export class AuthController {
+@AuthServiceControllerMethods()
+export class AuthController implements AuthServiceController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('health-check')
@@ -25,8 +31,10 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @MessagePattern('authenticate')
   async authenticate(@Payload() data: any) {
-    return data.user;
+    return {
+      ...data.user,
+      id: data.user._id,
+    };
   }
 }

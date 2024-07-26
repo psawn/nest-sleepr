@@ -1,12 +1,17 @@
 import Stripe from 'stripe';
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientGrpc } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
-import { NOTIFICATIONS_SERVICE } from '@app/common';
+import {
+  NOTIFICATIONS_SERVICE_NAME,
+  NotificationsServiceClient,
+} from '@app/common';
 import { PaymentsCreateChargeDto } from './dto';
 
 @Injectable()
 export class PaymentsService {
+  private notificationsService: NotificationsServiceClient;
+
   private readonly stripe = new Stripe(
     this.configService.get('STRIPE_SECRET_KEY'),
     { apiVersion: '2024-06-20' },
@@ -14,11 +19,21 @@ export class PaymentsService {
 
   constructor(
     private readonly configService: ConfigService,
-    @Inject(NOTIFICATIONS_SERVICE)
-    private readonly notificationsService: ClientProxy,
+    @Inject(NOTIFICATIONS_SERVICE_NAME)
+    private readonly client: ClientGrpc,
   ) {}
 
   async createCharge({ card, amount, email }: PaymentsCreateChargeDto) {
+    // const paymentMethod = await this.stripe.paymentMethods.create({
+    //   type: 'card',
+    //   card: {
+    //     cvc: card.cvc,
+    //     number: card.number,
+    //     exp_month: card.expMonth,
+    //     exp_year: card.expYear,
+    //   },
+    // });
+
     const paymentIntent = await this.stripe.paymentIntents.create({
       amount: amount * 100,
       confirm: true,
@@ -27,10 +42,20 @@ export class PaymentsService {
       automatic_payment_methods: { enabled: true, allow_redirects: 'never' },
     });
 
-    this.notificationsService.emit('notify_email', {
-      email,
-      text: `Your payment of $${amount} has completed successfully`,
-    });
+    if (!this.notificationsService) {
+      // can init in runtime, doesn't always done in on module init
+      this.notificationsService =
+        this.client.getService<NotificationsServiceClient>(
+          NOTIFICATIONS_SERVICE_NAME,
+        );
+    }
+
+    this.notificationsService
+      .notifyEmail({
+        email,
+        text: `Your payment of $${amount} has completed successfully`,
+      })
+      .subscribe(() => {});
 
     return paymentIntent;
   }
