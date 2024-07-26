@@ -16,7 +16,7 @@ COPY apps/notifications apps/notifications
 COPY libs libs
 
 # if want to seperate package.json -> use this line below
-# RUN cd /auth && npm i
+# RUN cd apps/notifications && npm i
 
 RUN npm run build notifications
 

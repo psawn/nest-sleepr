@@ -16,7 +16,7 @@ COPY apps/auth apps/auth
 COPY libs libs
 
 # if want to seperate package.json -> use this line below
-# RUN cd /auth && npm i
+# RUN cd apps/auth && npm i
 
 RUN npm run build auth
 
