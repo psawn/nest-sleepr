@@ -8,10 +8,13 @@ async function bootstrap() {
   const app = await NestFactory.create(PaymentsModule);
   const configService = app.get(ConfigService);
   app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.TCP,
+    transport: Transport.RMQ,
     options: {
-      host: '0.0.0.0',
-      port: configService.get('PORT'),
+      // urls is an array of rabbitmq uri broker to connect
+      urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+      // queue is where the messages will go to be consumed in this service
+      // if messages need to be retried, they will be put back in this queue
+      queue: 'payments',
     },
   });
   app.useLogger(app.get(Logger));

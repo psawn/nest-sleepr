@@ -34,22 +34,22 @@ import {
     ClientsModule.registerAsync([
       {
         name: AUTH_SERVICE,
-        useFactory: (configSerfice: ConfigService) => ({
-          transport: Transport.TCP,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
           options: {
-            host: configSerfice.get('AUTH_HOST'),
-            port: configSerfice.get('AUTH_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'auth',
           },
         }),
         inject: [ConfigService],
       },
       {
         name: PAYMENTS_SERVICE,
-        useFactory: (configSerfice: ConfigService) => ({
-          transport: Transport.TCP,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
           options: {
-            host: configSerfice.get('PAYMENTS_HOST'),
-            port: configSerfice.get('PAYMENTS_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'payments',
           },
         }),
         inject: [ConfigService],

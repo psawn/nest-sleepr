@@ -22,11 +22,11 @@ import { PaymentsService } from './payments.service';
     ClientsModule.registerAsync([
       {
         name: NOTIFICATIONS_SERVICE,
-        useFactory: (configSerfice: ConfigService) => ({
-          transport: Transport.TCP,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
           options: {
-            host: configSerfice.get('NOTIFICATIONS_HOST'),
-            port: configSerfice.get('NOTIFICATIONS_PORT'),
+            urls: [configService.getOrThrow<string>('RABBITMQ_URI')],
+            queue: 'notifications',
           },
         }),
         inject: [ConfigService],
