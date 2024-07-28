@@ -7,6 +7,11 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersModule } from './users/users.module';
 import { JwtStrategy, LocalStrategy } from './strategies/';
+import { GraphQLModule } from '@nestjs/graphql';
+import {
+  ApolloFederationDriver,
+  ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
 
 @Module({
   imports: [
@@ -22,6 +27,13 @@ import { JwtStrategy, LocalStrategy } from './strategies/';
         HTTP_PORT: Joi.number().required(),
         TCP_PORT: Joi.number().required(),
       }),
+    }),
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      // autoSchemaFile automatically generate the qraphql schema from code when setup graphql types in code
+      autoSchemaFile: {
+        federation: 2,
+      },
     }),
     JwtModule.registerAsync({
       inject: [ConfigService],

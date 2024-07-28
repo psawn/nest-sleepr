@@ -1,5 +1,9 @@
 import * as bcrypt from 'bcryptjs';
-import { Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { CreateUserDto, GetUserDto } from './dto';
 import { UsersRepository } from './users.repository';
 
@@ -40,5 +44,9 @@ export class UsersService {
 
   async getUser(getUserDto: GetUserDto) {
     return this.usersRepository.findOne(getUserDto);
+  }
+
+  async findAll() {
+    return this.usersRepository.find({});
   }
 }

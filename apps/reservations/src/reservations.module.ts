@@ -1,8 +1,18 @@
 import * as Joi from 'joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
-import { DatabaseModule, LoggerModule, AUTH_SERVICE, PAYMENTS_SERVICE } from '@app/common';
+import { GraphQLModule } from '@nestjs/graphql';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import {
+  ApolloFederationDriver,
+  ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
+import {
+  DatabaseModule,
+  LoggerModule,
+  AUTH_SERVICE,
+  PAYMENTS_SERVICE,
+} from '@app/common';
 import { ReservationsService } from './reservations.service';
 import { ReservationsController } from './reservations.controller';
 import { ReservationsRepository } from './reservations.repository';
@@ -10,6 +20,7 @@ import {
   ReservationDocument,
   ReservationSchema,
 } from './models/reservation.schema';
+import { ReservationsResolver } from './reservations.resolver';
 
 @Module({
   imports: [
@@ -18,6 +29,13 @@ import {
     DatabaseModule.forFeature([
       { name: ReservationDocument.name, schema: ReservationSchema },
     ]),
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      // autoSchemaFile automatically generate the qraphql schema from code when setup graphql types in code
+      autoSchemaFile: {
+        federation: 2,
+      },
+    }),
     LoggerModule,
     ConfigModule.forRoot({
       envFilePath: './apps/reservations/.env',
@@ -57,6 +75,10 @@ import {
     ]),
   ],
   controllers: [ReservationsController],
-  providers: [ReservationsService, ReservationsRepository],
+  providers: [
+    ReservationsService,
+    ReservationsRepository,
+    ReservationsResolver,
+  ],
 })
 export class ReservationsModule {}

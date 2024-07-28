@@ -10,7 +10,7 @@ COPY nest-cli.json nest-cli.json
 
 RUN npm i
 
-# if want to seperate package.json -> use this line below instate of COPY apps/auth apps/auth
+# if want to seperate package.json -> use this line below instate of COPY apps/payments apps/payments
 # COPY apps/payments /payments
 COPY apps/payments apps/payments
 COPY libs libs

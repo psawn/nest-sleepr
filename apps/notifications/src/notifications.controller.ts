@@ -1,4 +1,4 @@
-import { Controller, Get, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { NotificationsService } from './notifications.service';
 import { NotifyEmailDto } from './dto';

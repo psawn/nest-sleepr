@@ -10,15 +10,15 @@ COPY nest-cli.json nest-cli.json
 
 RUN npm i
 
-# if want to seperate package.json -> use this line below instate of COPY apps/notifications apps/notifications
-# COPY apps/notifications /notifications
-COPY apps/notifications apps/notifications
+# if want to seperate package.json -> use this line below instate of COPY apps/gateway apps/gateway
+# COPY apps/gateway /gateway
+COPY apps/gateway apps/gateway
 COPY libs libs
 
 # if want to seperate package.json -> use this line below
-# RUN cd apps/notifications && npm i
+# RUN cd apps/gateway && npm i
 
-RUN npm run build notifications
+RUN npm run build gateway
 
 FROM node:alpine As production
 
@@ -33,4 +33,4 @@ RUN npm i --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/notifications/main"]
+CMD ["node", "dist/apps/gateway/main"]
