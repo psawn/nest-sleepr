@@ -11,7 +11,8 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { Reflector } from '@nestjs/core';
 import { AUTH_SERVICE } from '../constants/services';
-import { UserDto } from '../dto';
+import { User } from '../interfaces';
+
 
 // need to reach out to auth service to validate jwt
 // any service which use this JWT guard need client proxy to inject auth service -> this is how we talk to other microservice
@@ -42,7 +43,7 @@ export class JwtAuthGuard implements CanActivate {
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
 
     return this.authClient
-      .send<UserDto>('authenticate', { Authentication: jwt })
+      .send<User>('authenticate', { Authentication: jwt })
       .pipe(
         // tap allow to execute side effect of the incoming response from auth service
         tap((res) => {
