@@ -1,6 +1,6 @@
 services:
   reservations:
-    build: 
+    build:
       context: .
       dockerfile: ./apps/reservations/Dockerfile
       target: development
@@ -8,14 +8,14 @@ services:
     env_file:
       - ./apps/reservations/.env
     ports:
-      - "3000:3000"
-      - "9229:9229"
+      - '3000:3000'
+      - '9229:9229'
     # using volumes can cause error with bcrypt if using Windows
     volumes:
       - .:/usr/src/app
 
   auth:
-    build: 
+    build:
       context: .
       dockerfile: ./apps/auth/Dockerfile
       # dockerfile: ./apps/auth/Dockerfile.dev
@@ -24,12 +24,12 @@ services:
     env_file:
       - ./apps/auth/.env
     ports:
-      - "3001:3001"
+      - '3001:3001'
     volumes:
       - .:/usr/src/app
-  
+
   payments:
-    build: 
+    build:
       context: .
       dockerfile: ./apps/payments/Dockerfile
       # dockerfile: ./apps/payments/Dockerfile.dev
@@ -37,12 +37,12 @@ services:
     command: npm run start:dev payments
     env_file:
       - ./apps/payments/.env
-    # no need expose port here because this is only exposed over TCP 
+    # no need expose port here because this is only exposed over TCP
     volumes:
       - .:/usr/src/app
 
   notifications:
-    build: 
+    build:
       context: .
       dockerfile: ./apps/notifications/Dockerfile
       # dockerfile: ./apps/notifications/Dockerfile.dev
@@ -52,6 +52,6 @@ services:
       - ./apps/notifications/.env
     volumes:
       - .:/usr/src/app
-    
+
   mongo:
     image: mongo
