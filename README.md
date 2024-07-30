@@ -71,3 +71,28 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+## Helm Chart
+
+```bash
+# create deployment
+$ kubectl create deployment [$name-deployment] --image=[$image] --dry-run=client -o yaml > deployment.yaml
+
+# create secret
+$ kubectl create secret docker-registry gcr-json-key --docker-server=asia-east2-docker.pkg.dev --docker-username=_json_key --docker-password="$(cat ./sleepr-430208-cc401100a870.json)" --docker-email=mrpsawn1996@gmail.com
+
+# add secret to default service account
+$ kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "gcr-json-key"}]}'
+
+# in k8s/sleepr -> run helm
+$ helm install sleepr .
+
+# list pod
+$ kubectl get po
+
+# describe pod
+$ kubectl describe po [$name-pod]
+
+# log pod
+$ kubectl logs [$name-pod]
+```

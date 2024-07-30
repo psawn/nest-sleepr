@@ -2,21 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: reservations
-  name: reservations
+    app: payments
+  name: payments
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: reservations
+      app: payments
   template:
     metadata:
       labels:
-        app: reservations
+        app: payments
     spec:
       containers:
-        - image: asia-east2-docker.pkg.dev/sleepr-430208/reservations/production
-          name: reservations
+        - image: asia-east2-docker.pkg.dev/sleepr-430208/payments/production
+          name: payments
           resources:
             limits:
               cpu: '1'
