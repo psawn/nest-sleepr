@@ -16,11 +16,18 @@ import { JwtStrategy, LocalStrategy } from './strategies/';
       envFilePath: './apps/auth/.env',
       isGlobal: true,
       validationSchema: Joi.object({
-        MONGODB_URI: Joi.string().required(),
+        DATABASE_URL: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION: Joi.string().required(),
         HTTP_PORT: Joi.number().required(),
         TCP_PORT: Joi.number().required(),
+      }),
+    }),
+    ConfigModule.forRoot({
+      envFilePath: './apps/auth/.env.local',
+      isGlobal: true,
+      validationSchema: Joi.object({
+        DATABASE_URL: Joi.string().required(),
       }),
     }),
     JwtModule.registerAsync({

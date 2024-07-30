@@ -16,44 +16,46 @@ services:
     volumes:
       - .:/usr/src/app
 
-  # auth:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/auth/Dockerfile
-  #     # dockerfile: ./apps/auth/Dockerfile.dev
-  #     target: development
-  #   command: npm run start:dev auth
-  #   env_file:
-  #     - ./apps/auth/.env
-  #   ports:
-  #     - '3001:3001'
-  #   volumes:
-  #     - .:/usr/src/app
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      # dockerfile: ./apps/auth/Dockerfile.dev
+      target: development
+    command: sh -c "npx prisma migrate deploy --schema apps/auth/prisma/schema.prisma && npx prisma generate --schema apps/auth/prisma/schema.prisma && npm run start:dev auth"
+    depends_on:
+      - postgres
+    env_file:
+      - ./apps/auth/.env
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/usr/src/app
 
-  # payments:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/payments/Dockerfile
-  #     # dockerfile: ./apps/payments/Dockerfile.dev
-  #     target: development
-  #   command: npm run start:dev payments
-  #   env_file:
-  #     - ./apps/payments/.env
-  #   # no need expose port here because this is only exposed over TCP
-  #   volumes:
-  #     - .:/usr/src/app
+  payments:
+    build:
+      context: .
+      dockerfile: ./apps/payments/Dockerfile
+      # dockerfile: ./apps/payments/Dockerfile.dev
+      target: development
+    command: npm run start:dev payments
+    env_file:
+      - ./apps/payments/.env
+    # no need expose port here because this is only exposed over TCP
+    volumes:
+      - .:/usr/src/app
 
-  # notifications:
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/notifications/Dockerfile
-  #     # dockerfile: ./apps/notifications/Dockerfile.dev
-  #     target: development
-  #   command: npm run start:dev notifications
-  #   env_file:
-  #     - ./apps/notifications/.env
-  #   volumes:
-  #     - .:/usr/src/app
+  notifications:
+    build:
+      context: .
+      dockerfile: ./apps/notifications/Dockerfile
+      # dockerfile: ./apps/notifications/Dockerfile.dev
+      target: development
+    command: npm run start:dev notifications
+    env_file:
+      - ./apps/notifications/.env
+    volumes:
+      - .:/usr/src/app
 
   postgres:
     image: postgres

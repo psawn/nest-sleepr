@@ -7,8 +7,10 @@ COPY tsconfig.json tsconfig.json
 # without copying the nest-cli.json file, the build will success
 # but will fail to run if do not run compose in root folder
 COPY nest-cli.json nest-cli.json
+COPY apps/auth/prisma ./prisma
 
 RUN npm i
+RUN npx prisma generate
 
 # if want to seperate package.json -> use this line below instate of COPY apps/auth apps/auth
 # COPY apps/auth /auth
@@ -33,4 +35,4 @@ RUN npm i --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/auth/main"]
+CMD ["npm", "run", "start:prod", "dist/apps/auth/main"]
