@@ -31,7 +31,7 @@ COPY package*.json ./
 # Copy tsconfig.json to ensure TypeScript can find its configuration
 COPY tsconfig.json tsconfig.json
 
-COPY nest-cli.json nest-cli.json
+# COPY nest-cli.json nest-cli.json
 
 # Copy node_modules from the development stage
 COPY --from=development /usr/src/app/node_modules ./node_modules
