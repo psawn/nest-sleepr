@@ -24,3 +24,18 @@ spec:
             requests:
               cpu: '0.5'
               memory: '256Mi'
+          env:
+            - name: PORT
+              value: '3001'
+            - name: NOTIFICATIONS_HOST
+              # This is the service name of the notifications service -> k8s service talk to each other
+              value: notifications
+            - name: NOTIFICATIONS_PORT
+              value: '3000'
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe
+                  key: apiKey  
+          ports:
+            - containerPort: 3001

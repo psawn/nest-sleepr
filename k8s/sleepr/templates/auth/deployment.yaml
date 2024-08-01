@@ -24,3 +24,23 @@ spec:
             requests:
               cpu: '0.5'
               memory: '256Mi'
+          env:
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: connectionString
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt
+                  key: jwtSecret
+            - name: JWT_EXPIRATION
+              value: '3600'
+            - name: TCP_PORT
+              value: '3002'
+            - name: HTTP_PORT
+              value: '3003'
+          ports:
+            - containerPort: 3002
+            - containerPort: 3003

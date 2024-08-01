@@ -74,25 +74,71 @@ Nest is [MIT licensed](LICENSE).
 
 ## Helm Chart
 
+### create deployment notifications
+
 ```bash
-# create deployment
-$ kubectl create deployment [$name-deployment] --image=[$image] --dry-run=client -o yaml > deployment.yaml
+$ kubectl create deployment sleepr --image=asia-east2-docker.pkg.dev/sleepr-430208/notifications --dry-run=client -o yaml > deployment.yaml
+```
 
-# create secret
+### create secret to push/pull image
+
+```bash
 $ kubectl create secret docker-registry gcr-json-key --docker-server=asia-east2-docker.pkg.dev --docker-username=_json_key --docker-password="$(cat ./sleepr-430208-cc401100a870.json)" --docker-email=mrpsawn1996@gmail.com
+```
 
-# add secret to default service account
+### create secret for env deployment notifications
+
+```bash
+$ kubectl create secret generic google --from-literal=clientSecret=google_oauth_client_secret --from-lit
+eral=refreshToken=refresh-token
+```
+
+### add secret to default service account
+
+```bash
 $ kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "gcr-json-key"}]}'
+```
 
-# in k8s/sleepr -> run helm
+### run helm
+
+```bash
+# in k8s/sleepr
 $ helm install sleepr .
+```
 
-# list pod
+### list pod
+
+```bash
 $ kubectl get po
+```
 
-# describe pod
-$ kubectl describe po [$name-pod]
+### describe pod
 
-# log pod
-$ kubectl logs [$name-pod]
+```bash
+$ kubectl describe po auth-6cdb5f59bc-gv4ng
+```
+
+### log pod
+
+```bash
+$ kubectl logs auth-6cdb5f59bc-gv4ng
+```
+
+### create service cluster ip notifications
+
+```bash
+# infolder k8s/sleepr/notifications
+$ kubectl create service clusterip notifications
+```
+
+### upgrade helm
+
+```bash
+$ helm upgrade sleepr .
+```
+
+### list service
+
+```bash
+$ kubectl get svc
 ```
