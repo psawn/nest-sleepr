@@ -24,7 +24,7 @@ steps:
         '-t',
         'asia-east2-docker.pkg.dev/sleepr-430208/auth/production',
         '-f',
-        'apps/auth/Dockerfile.dev',
+        'apps/auth/Dockerfile',
         '.',
       ]
   - name: 'gcr.io/cloud-builders/docker'
@@ -37,7 +37,7 @@ steps:
         '-t',
         'asia-east2-docker.pkg.dev/sleepr-430208/notifications/production',
         '-f',
-        'apps/notifications/Dockerfile.dev',
+        'apps/notifications/Dockerfile',
         '.',
       ]
   - name: 'gcr.io/cloud-builders/docker'
@@ -54,7 +54,7 @@ steps:
         '-t',
         'asia-east2-docker.pkg.dev/sleepr-430208/payments/production',
         '-f',
-        'apps/payments/Dockerfile.dev',
+        'apps/payments/Dockerfile',
         '.',
       ]
   - name: 'gcr.io/cloud-builders/docker'
