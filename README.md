@@ -77,20 +77,43 @@ Nest is [MIT licensed](LICENSE).
 ### create deployment notifications
 
 ```bash
-$ kubectl create deployment sleepr --image=asia-east2-docker.pkg.dev/sleepr-430208/notifications --dry-run=client -o yaml > deployment.yaml
+$ kubectl create deployment sleepr --image=<image> --dry-run=client -o yaml > deployment.yaml
 ```
 
 ### create secret to push/pull image
 
 ```bash
-$ kubectl create secret docker-registry gcr-json-key --docker-server=asia-east2-docker.pkg.dev --docker-username=_json_key --docker-password="$(cat ./sleepr-430208-cc401100a870.json)" --docker-email=mrpsawn1996@gmail.com
+$ kubectl create secret docker-registry gcr-json-key --docker-server=<docker_server> --docker-username=_json_key --docker-password="$(cat ./<key_file>.json)" --docker-email=<docker_email>
 ```
 
-### create secret for env deployment notifications
+### create secret mongodb
 
 ```bash
-$ kubectl create secret generic google --from-literal=clientSecret=google_oauth_client_secret --from-lit
-eral=refreshToken=refresh-token
+$ kubectl create secret generic mongodb --from-literal=connectionString=mongodb+srv://<username>:<password>@<mongodb_server> --from-literal=jwtSecret=jwt-secret
+```
+
+### create secret jwt
+
+```bash
+$ kubectl create secret generic jwt --from-literal=jwtSecret=jwt-secret
+```
+
+### create secret google
+
+```bash
+$ kubectl create secret generic google --from-literal=clientSecret=google_oauth_client_secret --from-lit  eral=refreshToken=refresh-token
+```
+
+### create secret stripe
+
+```bash
+$ kubectl create secret generic stripe --from-literal=apiKey=api_key
+```
+
+### create file secret yaml from secret
+
+```bash
+$ kubectl get secret stripe -o yaml > stripe.yaml
 ```
 
 ### add secret to default service account
@@ -115,13 +138,13 @@ $ kubectl get po
 ### describe pod
 
 ```bash
-$ kubectl describe po auth-6cdb5f59bc-gv4ng
+$ kubectl describe po <pod_name>
 ```
 
 ### log pod
 
 ```bash
-$ kubectl logs auth-6cdb5f59bc-gv4ng
+$ kubectl logs <pod_name>
 ```
 
 ### create service cluster ip notifications
@@ -141,4 +164,17 @@ $ helm upgrade sleepr .
 
 ```bash
 $ kubectl get svc
+```
+
+### switch to kubectl local
+
+```bash
+$ kubectl config get-contexts
+
+$ kubectl config use-context docker-desktop
+```
+
+### run create secret
+```bash
+$ kubectl create -f <secret_file>
 ```
